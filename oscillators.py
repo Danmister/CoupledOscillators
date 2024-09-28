@@ -60,7 +60,7 @@ def simulation_step():
 
 
 # Run the simulation and save GIF and final graph
-def run_simulation(steps=100, k=0.1):
+def run_simulation(steps=T, k=k):
     frames = []  # List to store image frames
     flashing_counts = []  # Store the number of flashing agents per step
 
@@ -106,5 +106,4 @@ def run_simulation(steps=100, k=0.1):
     plt.close()
 
 
-# Example run for k = 0.1
 run_simulation(steps=100, k=k)
