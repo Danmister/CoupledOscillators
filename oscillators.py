@@ -1,6 +1,7 @@
+import os
 import numpy as np
-import random
 import matplotlib.pyplot as plt
+import imageio
 
 # Grid and simulation parameters
 grid_size = 10  # 10x10 grid for 100 agents
@@ -58,30 +59,52 @@ def simulation_step():
     agents_state = new_state
 
 
-# Run the simulation and visualize
-def run_simulation(steps=100):
-    flashing_counts = []
+# Run the simulation and save GIF and final graph
+def run_simulation(steps=100, k=0.1):
+    frames = []  # List to store image frames
+    flashing_counts = []  # Store the number of flashing agents per step
+
+    # Create directory for the run based on k value
+    run_folder = f"runs/k_{k}"
+    os.makedirs(run_folder, exist_ok=True)
+
     for step in range(steps):
         simulation_step()
-        # Count how many agents are flashing
+
+        # Count how many agents are flashing and append to the list
         flashing_counts.append(np.sum(agents_state))
-        # Optionally, display the grid
+
+        # Create a plot for each step and store the figure in memory
         plt.imshow(agents_state, cmap='Greys', interpolation='none')
-        plt.title(f'Step: {step}, Flashing agents: {np.sum(agents_state)}')
-        plt.pause(0.1)
-    return flashing_counts
+        plt.title(f'Step: {step}, Flashing agents: {np.sum(agents_state)}, (k = {k})')
+
+        # Save the current frame as an image in memory
+        plt.tight_layout()
+        plt.draw()
+
+        # Convert the plot to an image array
+        frame = np.frombuffer(plt.gcf().canvas.tostring_rgb(), dtype='uint8')
+        frame = frame.reshape(plt.gcf().canvas.get_width_height()[::-1] + (3,))
+        frames.append(frame)
+
+        plt.clf()  # Clear the plot for the next frame
+
+    # Save frames as a GIF in the designated folder
+    gif_filename = os.path.join(run_folder, 'flashing_agents.gif')
+    imageio.mimsave(gif_filename, frames, fps=5)  # Adjust FPS for desired speed
+    print(f'GIF saved as {gif_filename}')
+
+    # Plot the final graph for flashing agents over time and save it
+    plt.figure()
+    plt.plot(flashing_counts)
+    plt.title(f'Number of Flashing Agents Over Time (k = {k})')
+    plt.xlabel('Time Steps')
+    plt.ylabel('Flashing Agents')
+    graph_filename = os.path.join(run_folder, 'flashing_agents_graph.png')
+    plt.savefig(graph_filename)
+    print(f'Graph saved as {graph_filename}')
+    plt.close()
 
 
-# Set up plotting
-plt.ion()  # Turn on interactive mode
-
-# Run for 100 steps and record how many agents are flashing
-flashing_counts = run_simulation(steps=100)
-
-# Plot the results after the simulation
-plt.figure()
-plt.plot(flashing_counts)
-plt.title('Number of Flashing Agents Over Time')
-plt.xlabel('Time Steps')
-plt.ylabel('Flashing Agents')
-plt.show()
+# Example run for k = 0.1
+run_simulation(steps=100, k=k)
