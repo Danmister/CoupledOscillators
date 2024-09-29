@@ -6,7 +6,7 @@ import imageio
 # Grid and simulation parameters
 grid_size = 10  # 10x10 grid for 100 agents
 T = 100  # Maximum value for counter c
-k = 0.1  # Constant between 0 and 1, easy to modify
+k = 0.4435  # Constant between 0 and 1, easy to modify
 
 # Initialize agents' state and counters
 agents_state = np.zeros((grid_size, grid_size))  # 0: not flashing, 1: flashing
