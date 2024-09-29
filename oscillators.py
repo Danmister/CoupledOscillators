@@ -6,7 +6,7 @@ import imageio
 # Grid and simulation parameters
 grid_size = 10  # 10x10 grid for 100 agents
 T = 100  # Maximum value for counter c
-k = 0.4435  # Constant between 0 and 1, easy to modify
+k = 0.4435  # Constant between 0 and 1
 
 # Initialize agents' state and counters
 agents_state = np.zeros((grid_size, grid_size))  # 0: not flashing, 1: flashing
@@ -37,7 +37,6 @@ def simulation_step():
 
     for i in range(grid_size):
         for j in range(grid_size):
-            # Increase the counter
             new_counters[i, j] += 1
 
             # Check if any neighbor flashed
@@ -87,11 +86,11 @@ def run_simulation(steps=T, k=k):
         frame = frame.reshape(plt.gcf().canvas.get_width_height()[::-1] + (3,))
         frames.append(frame)
 
-        plt.clf()  # Clear the plot for the next frame
+        plt.clf()
 
     # Save frames as a GIF in the designated folder
     gif_filename = os.path.join(run_folder, 'flashing_agents.gif')
-    imageio.mimsave(gif_filename, frames, fps=5)  # Adjust FPS for desired speed
+    imageio.mimsave(gif_filename, frames, fps=5)
     print(f'GIF saved as {gif_filename}')
 
     # Plot the final graph for flashing agents over time and save it
